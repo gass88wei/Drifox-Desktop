@@ -1,6 +1,8 @@
 ; DriFox Windows Installer
 #define MyAppName "DriFox"
+#ifndef MyAppVersion
 #define MyAppVersion "0.0.0"
+#endif
 #define MyAppPublisher "DriFox"
 #define MyAppExeName "Drifox.exe"
 
