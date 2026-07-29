@@ -3,7 +3,7 @@ name: Build & Release
 on:
   push:
     tags: ['v*']                   # 推送 v* tag → 构建 + 发布 Release
-    branches: [main, develop]       # 推送代码 → 仅构建验证，不发布
+    branches: [master, develop]     # 推送代码 → 仅构建验证，不发布
   pull_request:                     # PR → 仅运行 lint 检查
   workflow_dispatch:
     inputs:
