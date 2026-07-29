@@ -969,6 +969,19 @@ class HookManager:
                         if skill_name not in self._skill_to_hooks:
                             self._skill_to_hooks[skill_name] = []
                         self._skill_to_hooks[skill_name].append((event_name, rule_index))
+            elif isinstance(rules, str):
+                # 字符串格式: {"EventName": ".module:function"} — Python 函数 hook
+                rule_data = {"hooks": [{"type": "python", "function": rules}]}
+                match_rule = HookMatchRule.from_dict(
+                    rule_data, skill_root, config_file, is_system_plugin=is_system_plugin
+                )
+                if match_rule.hooks:
+                    rule_index = len(self._hooks[event_name])
+                    self._hooks[event_name].append(match_rule)
+                    count += len(match_rule.hooks)
+                    if skill_name not in self._skill_to_hooks:
+                        self._skill_to_hooks[skill_name] = []
+                    self._skill_to_hooks[skill_name].append((event_name, rule_index))
             else:
                 logger.warning(f"[HookManager] Invalid rules format for {event_name}")
 
