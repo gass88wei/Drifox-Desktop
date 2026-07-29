@@ -5124,26 +5124,22 @@ class CodeWebViewer(QWebEngineView):
             parent = parent.parent()
 
     def _copy_to_clipboard(self):
-        """复制内容到剪贴板（使用系统原生 API）
+        self.page().runJavaScript(
+            "window.getSelection().toString()",
+            lambda sel: self._do_copy(sel or self.get_plain_text())
+        )
 
-        🐛 修复：使用 get_plain_text() 替代直接读 _markdown_text，
-        因为 _cleanup_render_cache 会将 _markdown_text 清空。
-        get_plain_text() 会通过 _lazy_markdown_cb 或父 MessageCard 自动兜底。
-        """
-        text = self.get_plain_text()
+    def _do_copy(self, text):
         if not text:
             return
         try:
             import win32clipboard
-
             win32clipboard.OpenClipboard()
             win32clipboard.EmptyClipboard()
             win32clipboard.SetClipboardText(text, win32clipboard.CF_UNICODETEXT)
             win32clipboard.CloseClipboard()
         except Exception:
-            # 兜底：使用 PyQt5 剪贴板
             from PyQt5.QtWidgets import QApplication
-
             clipboard = QApplication.clipboard()
             clipboard.setText(text)
 
